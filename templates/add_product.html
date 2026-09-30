@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7"><div class="card card-body shadow-sm"><h4>Add a product from a real photo</h4>
+<div class="alert alert-info small">Best results: a <b>front-view flat-lay or ghost-mannequin</b> photo of the garment on a <b>plain (white/light) background</b>, not a photo of a person wearing it. The background is removed automatically and the garment is then warped onto your body in the try-on. Sleeves should be visible.</div>
+<form method="post" enctype="multipart/form-data" class="row g-2">
+<div class="col-12"><input class="form-control" type="file" name="photo" accept="image/*" required></div>
+<div class="col-12"><input class="form-control" name="name" placeholder="Product name" required></div>
+<div class="col-md-4"><select class="form-select" name="category">{% for c in ['top','bottom','dress','jacket','hat'] %}<option>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><select class="form-select" name="color">{% for c in COLOR_NAMES %}<option>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><select class="form-select" name="gender"><option>unisex</option><option>male</option><option>female</option></select></div>
+<div class="col-md-4"><select class="form-select" name="style">{% for c in STYLES %}<option>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><select class="form-select" name="occasion">{% for c in OCCASIONS %}<option>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-4"><input class="form-control" type="number" name="price" placeholder="Price ₹" required></div>
+<div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="ai" id="ai"><label class="form-check-label small" for="ai">Use AI background removal (only if you ran <code>pip install rembg onnxruntime</code>)</label></div>
+<div class="col-12"><button class="btn btn-primary w-100">Add product &amp; try it on</button></div></form></div></div></div>{% endblock %}

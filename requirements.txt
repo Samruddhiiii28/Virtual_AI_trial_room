@@ -1,0 +1,8 @@
+flask>=3.0
+numpy<2
+opencv-contrib-python==4.9.0.80
+mediapipe==0.10.14
+scikit-learn>=1.3
+scipy
+joblib
+pillow

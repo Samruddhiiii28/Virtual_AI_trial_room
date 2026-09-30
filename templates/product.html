@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% from '_macros.html' import card %}
+{% block content %}<div class="row g-4"><div class="col-md-5"><div class="img-wrap" style="height:420px;border-radius:1rem"><img src="{{ url_for('static', filename='clothes/%d.png'|format(p.id)) }}"></div></div>
+<div class="col-md-7"><h2>{{ p.name }}</h2><p class="text-muted text-capitalize">{{ p.category }} · {{ p.color }} · {{ p.style }} · {{ p.occasion }} · {{ p.gender }}</p>
+<h3>₹{{ '%d'|format(p.price) }}</h3><p>{{ p.description }}</p><p class="small">In stock: {{ p.stock }}</p>
+<form method="post" action="{{ url_for('cart_add') }}" class="d-flex gap-2 align-items-center mb-3"><input type="hidden" name="product_id" value="{{ p.id }}">
+<select name="size" class="form-select w-auto">{% for s in ['XS','S','M','L','XL','XXL'] %}<option {{ 'selected' if s==rec_size }}>{{ s }}</option>{% endfor %}</select>
+<button class="btn btn-primary">Add to Cart</button><a class="btn btn-dark" href="{{ url_for('tryon', ids=p.id) }}">Try On Virtually</a></form>
+{% if me %}<form method="post" action="{{ url_for('wishlist', pid=p.id) }}" class="mb-3"><button class="btn btn-outline-danger btn-sm">{{ '♥ Remove from wishlist' if wished else '♡ Add to wishlist' }}</button></form>{% endif %}
+<div class="card card-body"><b>📏 Find my size</b><div class="row g-2 mt-1"><div class="col"><input id="h" class="form-control" placeholder="Height cm" value="{{ me.height|int if me else '' }}"></div>
+<div class="col"><input id="w" class="form-control" placeholder="Weight kg" value="{{ me.weight|int if me else '' }}"></div>
+<div class="col"><select id="g" class="form-select"><option value="male" {{ 'selected' if me and me.gender=='male' }}>Male</option><option value="female" {{ 'selected' if me and me.gender=='female' }}>Female</option></select></div>
+<div class="col"><button class="btn btn-outline-dark" onclick="sz()">Predict</button></div></div><div id="szout" class="mt-2 fw-bold"></div></div></div></div>
+<h5 class="mt-5">You may also like</h5><div class="row g-3">{% for s in similar %}{{ card(s) }}{% endfor %}</div>{% endblock %}
+{% block scripts %}<script>async function sz(){const r=await fetch('/api/size',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({height:h.value,weight:w.value,gender:g.value})});
+const d=await r.json();szout.textContent='Recommended size: '+d.size+' ('+d.confidence+'% confidence'+(d.alternative?', or '+d.alternative:'')+')';}</script>{% endblock %}

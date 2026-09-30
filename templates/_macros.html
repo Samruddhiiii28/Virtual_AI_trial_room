@@ -1,0 +1,8 @@
+{% macro card(p) %}
+<div class="col-6 col-md-4 col-lg-3"><div class="card h-100 product-card">
+<a href="{{ url_for('product', pid=p.id) }}" class="img-wrap"><img src="{{ url_for('static', filename='clothes/%d.png'|format(p.id)) }}" alt="{{ p.name }}"></a>
+<div class="card-body"><h6 class="mb-1">{{ p.name }}</h6><div class="small text-muted text-capitalize">{{ p.category }} · {{ p.color }} · {{ p.occasion }}</div><div class="fw-bold mt-1">₹{{ '%d'|format(p.price) }}</div></div>
+<div class="card-footer bg-white d-flex gap-2"><a class="btn btn-sm btn-dark flex-fill" href="{{ url_for('tryon', ids=p.id) }}">Try On</a>
+<a class="btn btn-sm btn-outline-secondary" href="{{ url_for('product', pid=p.id) }}">Details</a></div></div></div>
+{% endmacro %}
+{% macro thumbs(ids) %}<div class="d-flex gap-2 flex-wrap">{% for i in ids %}<img class="thumb" src="{{ url_for('static', filename='clothes/%d.png'|format(i)) }}">{% endfor %}</div>{% endmacro %}

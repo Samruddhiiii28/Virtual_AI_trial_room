@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block content %}
+<div class="row g-3"><div class="col-lg-7"><div class="stage"><div id="ph" class="text-white-50 text-center p-5">Click <b>Start Camera</b> or <b>Upload Photo</b><br>Stand back so shoulders, hips and legs are visible.</div>
+<img id="out" class="d-none" alt="try-on"></div><video id="video" class="d-none" playsinline muted></video>
+<div id="status" class="small text-muted mt-2">Ready.</div>
+<div class="d-flex flex-wrap gap-2 mt-2"><button class="btn btn-primary" id="start">📷 Start Camera</button><button class="btn btn-outline-secondary" id="stop">Stop</button>
+<label class="btn btn-outline-primary mb-0">🖼 Upload Photo<input type="file" id="file" accept="image/*" hidden></label>
+<button class="btn btn-warning" id="shot">📸 Screenshot</button><button class="btn btn-outline-dark" id="save">💾 Save Outfit</button><button class="btn btn-success" id="cartbtn">🛒 Add Outfit to Cart</button></div>
+<div class="row g-3 mt-1"><div class="col-6"><label class="small">Garment size ×<span id="sv">1.0</span></label><input type="range" class="form-range" id="scale" min="0.7" max="1.4" step="0.02" value="1"></div>
+<div class="col-6"><label class="small">Vertical shift</label><input type="range" class="form-range" id="dy" min="-0.3" max="0.3" step="0.01" value="0"></div></div></div>
+<div class="col-lg-5"><div class="card card-body mb-3"><b>Your outfit</b><div id="chosen" class="my-2"></div><div>Total: ₹<span id="total">0</span></div></div>
+<div class="card card-body mb-3"><b>📏 Size &amp; measurements</b><div class="row g-2 my-1"><div class="col"><input id="height" class="form-control" placeholder="Height cm" value="{{ user.height|int if user else 170 }}"></div>
+<div class="col"><input id="weight" class="form-control" placeholder="Weight kg" value="{{ user.weight|int if user else 65 }}"></div>
+<div class="col"><select id="gender" class="form-select"><option value="male" {{ 'selected' if user and user.gender=='male' }}>Male</option><option value="female" {{ 'selected' if not user or user.gender=='female' }}>Female</option></select></div></div>
+<button class="btn btn-sm btn-outline-dark" id="sizebtn">Predict my size</button>
+<div class="mt-2 small">ML size: <b id="mlSize">–</b> · Live shoulder width ≈ <b id="shoulder">–</b> cm (size <b id="poseSize">–</b>)</div></div>
+<div class="d-flex flex-wrap gap-1 mb-2">{% for c, l in [('all','All'),('top','Tops'),('bottom','Bottoms'),('dress','Dresses'),('jacket','Jackets'),('hat','Caps')] %}<button class="btn btn-sm cat-tab {{ 'btn-dark' if c=='all' else 'btn-outline-dark' }}" data-cat="{{ c }}">{{ l }}</button>{% endfor %}</div>
+<div class="row g-2" style="max-height:420px;overflow:auto">{% for p in products %}<div class="col-4 col-md-3 pickcol" data-cat="{{ p.category }}"><div class="pick" data-id="{{ p.id }}"><img src="{{ url_for('static', filename='clothes/%d.png'|format(p.id)) }}"><div>{{ p.name }}</div><div class="text-muted">₹{{ '%d'|format(p.price) }}</div></div></div>{% endfor %}</div></div></div>
+{% endblock %}
+{% block scripts %}<script>const PRODUCTS={{ products|tojson }};const INITIAL={{ initial|tojson }};</script>
+<script src="{{ url_for('static', filename='js/tryon.js') }}"></script>{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block content %}<h3>Cart &amp; Checkout</h3>
+{% if items %}<table class="table bg-white align-middle"><tr><th></th><th>Item</th><th>Size</th><th>Qty</th><th>Price</th><th></th></tr>
+{% for i in items %}<tr><td><img class="thumb" src="{{ url_for('static', filename='clothes/%d.png'|format(i.id)) }}"></td><td>{{ i.name }}</td><td>{{ i.size }}</td><td>{{ i.qty }}</td><td>₹{{ '%d'|format(i.price*i.qty) }}</td>
+<td><form method="post" action="{{ url_for('cart_remove', cid=i.cid) }}"><button class="btn btn-sm btn-outline-danger">Remove</button></form></td></tr>{% endfor %}
+<tr><th colspan="4" class="text-end">Total</th><th>₹{{ '%d'|format(total) }}</th><th></th></tr></table>
+<form method="post" action="{{ url_for('checkout') }}" class="card card-body"><textarea class="form-control mb-2" name="address" placeholder="Delivery address" required></textarea>
+<button class="btn btn-success">Place Order (demo payment)</button></form>
+{% else %}<p>Your cart is empty. <a href="{{ url_for('catalog') }}">Browse products</a>.</p>{% endif %}{% endblock %}

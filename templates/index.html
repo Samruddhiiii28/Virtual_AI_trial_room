@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% from '_macros.html' import card %}
+{% block content %}
+<div class="hero p-5 mb-4"><h1 class="fw-bold">Virtual AI Trial Room</h1>
+<p class="lead">Try clothes on live with your webcam, get complete outfit suggestions and an ML-predicted size — before you buy.</p>
+<a class="btn btn-light btn-lg me-2" href="{{ url_for('tryon') }}">Start Virtual Try-On</a>
+<a class="btn btn-outline-light btn-lg" href="{{ url_for('recommend') }}">Get Outfit Recommendations</a></div>
+<div class="row text-center g-3 mb-4">
+<div class="col-md-4"><div class="p-3 bg-white rounded shadow-sm"><h5>📷 Live Try-On</h5><p class="small mb-0">MediaPipe Pose + OpenCV place and resize garments on your body.</p></div></div>
+<div class="col-md-4"><div class="p-3 bg-white rounded shadow-sm"><h5>🎨 Outfit Recommender</h5><p class="small mb-0">Colour matching, occasion, style, budget and history aware.</p></div></div>
+<div class="col-md-4"><div class="p-3 bg-white rounded shadow-sm"><h5>📏 Size Prediction</h5><p class="small mb-0">Random-forest classifier suggests your best size.</p></div></div></div>
+<h4 class="mb-3">Featured</h4><div class="row g-3">{% for p in featured %}{{ card(p) }}{% endfor %}</div>
+{% endblock %}

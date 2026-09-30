@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% from '_macros.html' import thumbs, card %}{% block content %}
+<h3>Outfit Recommendations</h3>
+<form class="row g-2 bg-white p-3 rounded shadow-sm mb-4"><input type="hidden" name="go" value="1">
+<div class="col-md-2"><label class="small">Gender</label><select name="gender" class="form-select">{% for g in ['male','female'] %}<option {{ 'selected' if pr.gender==g }}>{{ g }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><label class="small">Occasion</label><select name="occasion" class="form-select">{% for s in OCCASIONS %}<option {{ 'selected' if pr.occasion==s }}>{{ s }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><label class="small">Style</label><select name="style" class="form-select">{% for s in STYLES %}<option {{ 'selected' if pr.style==s }}>{{ s }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><label class="small">Colour</label><select name="color" class="form-select">{% for s in COLOR_NAMES %}<option {{ 'selected' if pr.color==s }}>{{ s }}</option>{% endfor %}</select></div>
+<div class="col-md-1"><label class="small">Budget ₹</label><input class="form-control" name="budget" value="{{ pr.budget|int }}"></div>
+<div class="col-md-1"><label class="small">Ht cm</label><input class="form-control" name="height" value="{{ pr.height|int }}"></div>
+<div class="col-md-1"><label class="small">Wt kg</label><input class="form-control" name="weight" value="{{ pr.weight|int }}"></div>
+<div class="col-md-1 d-flex align-items-end"><button class="btn btn-dark w-100">Go</button></div></form>
+{% if outfits is not none %}
+<div class="alert alert-info">📏 Recommended size: <b>{{ size.size }}</b> ({{ size.confidence }}% confidence{% if size.alternative %}, alternative {{ size.alternative }}{% endif %})</div>
+{% if over %}<div class="alert alert-warning">No outfit fits your budget exactly, showing the closest matches.</div>{% endif %}
+<h5>Complete Outfit Suggestions</h5><div class="row g-3 mb-4">{% for o in outfits %}<div class="col-md-6 col-lg-4"><div class="card card-body h-100 shadow-sm">
+<div class="d-flex justify-content-between"><b>Outfit {{ loop.index }}</b><span class="badge bg-success">{{ o.pct }}% match</span></div>
+<div class="my-2">{{ thumbs(o['items']|map(attribute='id')|list) }}</div>
+<ul class="small mb-2">{% for i in o['items'] %}<li>{{ i.name }} – ₹{{ '%d'|format(i.price) }}</li>{% endfor %}</ul>
+<div class="small text-muted mb-2">{{ o.reasons|join(' · ') }}</div><div class="fw-bold mb-2">Total ₹{{ '%d'|format(o.total) }}</div>
+<div class="d-flex gap-1 mt-auto"><a class="btn btn-sm btn-dark" href="{{ url_for('tryon', ids=o.ids) }}">Try On</a>
+<form method="post" action="{{ url_for('outfit_save') }}"><input type="hidden" name="ids" value="{{ o.ids }}"><input type="hidden" name="name" value="{{ pr.occasion|title }} outfit {{ loop.index }}"><button class="btn btn-sm btn-outline-secondary">Save</button></form>
+<form method="post" action="{{ url_for('outfit_cart') }}"><input type="hidden" name="ids" value="{{ o.ids }}"><button class="btn btn-sm btn-success">Add all to cart</button></form></div></div></div>{% else %}<p>No outfits found.</p>{% endfor %}</div>
+<h5>Best Picks for You</h5><div class="row g-3">{% for p in picks %}{{ card(p) }}{% endfor %}</div>{% endif %}{% endblock %}

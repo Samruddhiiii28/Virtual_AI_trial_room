@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% from '_macros.html' import card %}
+{% block content %}<h3>Product Catalog</h3>
+<div class="d-flex flex-wrap gap-2 mb-3">
+{% for c, label in [('', 'All'), ('top', 'Tops'), ('bottom', 'Bottoms'), ('dress', 'Dresses'), ('jacket', 'Jackets'), ('hat', 'Hats & Caps')] %}
+<a class="btn btn-sm {{ 'btn-dark' if (a.category or '')==c else 'btn-outline-dark' }} rounded-pill px-3" href="{{ url_for('catalog', category=c or None, occasion=a.occasion, color=a.color, q=a.q, max_price=a.max_price) }}">{{ label }}</a>{% endfor %}</div>
+<form class="row g-2 mb-4 bg-white p-3 rounded shadow-sm">
+<input type="hidden" name="category" value="{{ a.category or '' }}">
+<div class="col-md-4"><input class="form-control" name="q" placeholder="Search…" value="{{ a.q or '' }}"></div>
+<div class="col-md-2"><select class="form-select" name="occasion" onchange="this.form.submit()"><option value="">Occasion</option>{% for c in OCCASIONS %}<option {{ 'selected' if a.occasion==c }}>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><select class="form-select" name="color" onchange="this.form.submit()"><option value="">Colour</option>{% for c in COLOR_NAMES %}<option {{ 'selected' if a.color==c }}>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><input class="form-control" type="number" name="max_price" placeholder="Max ₹" value="{{ a.max_price or '' }}"></div>
+<div class="col-md-2"><button class="btn btn-dark w-100">Search</button></div></form>
+<p class="text-muted small">{{ products|length }} item(s)</p>
+<div class="row g-3">{% for p in products %}{{ card(p) }}{% else %}<p>No products found.</p>{% endfor %}</div>{% endblock %}
